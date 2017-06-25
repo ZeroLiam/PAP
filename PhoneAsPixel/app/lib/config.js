@@ -1,5 +1,5 @@
 const staging = {
-	host: "localhost:8081"
+	host: "localhost:8080"
 }
 
 export default staging;

@@ -11,7 +11,8 @@
 		"react-native": "0.45.1",
 		"react-native-material-design": "^0.3.7",
 		"react-native-websocket": "^1.0.0",
-		"styled-components": "^2.1.0"
+		"styled-components": "^2.1.0",
+		"websocket": "^1.0.24"
 	},
 	"devDependencies": {
 		"babel-jest": "20.0.3",
