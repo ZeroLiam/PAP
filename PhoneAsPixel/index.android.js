@@ -1,31 +1,19 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
+import React, {  Component } from 'react';
+ import { AppRegistry, Image, StyleSheet, Text, View } from 'react-native';
 
- import React, {
-   Component,
- } from 'react';
- import {
-   AppRegistry,
-   Image,
-   StyleSheet,
-   Text,
-   View,
- } from 'react-native';
+import Mainstyles from './app/styles/Mainstyles.js'
 
 export default class PhoneAsPixel extends Component {
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
+      <View style={Mainstyles.container}>
+        <Text style={Mainstyles.welcome}>
           Welcome to React Native Homie!!!
         </Text>
-        <Text style={styles.instructions}>
+        <Text style={Mainstyles.instructions}>
           To get started, edit index.android.js
         </Text>
-        <Text style={styles.instructions}>
+        <Text style={Mainstyles.instructions}>
           Double tap R on your keyboard to reload,{'\n'}
           Shake or press menu button for dev menu
         </Text>
@@ -33,24 +21,5 @@ export default class PhoneAsPixel extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
 
 AppRegistry.registerComponent('PhoneAsPixel', () => PhoneAsPixel);
