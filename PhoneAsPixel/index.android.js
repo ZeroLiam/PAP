@@ -4,20 +4,23 @@
  * @flow
  */
 
-import React, { Component } from 'react';
-import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
+ import React, {
+   Component,
+ } from 'react';
+ import {
+   AppRegistry,
+   Image,
+   StyleSheet,
+   Text,
+   View,
+ } from 'react-native';
 
 export default class PhoneAsPixel extends Component {
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
-          Welcome to React Native!
+          Welcome to React Native Homie!!!
         </Text>
         <Text style={styles.instructions}>
           To get started, edit index.android.js
