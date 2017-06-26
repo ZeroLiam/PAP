@@ -1,4 +1,4 @@
-import config from './config';
+import config from './config.js';
 
 export default function ajax(opts) {
     return window.$.ajax(Object.assign({

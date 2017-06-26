@@ -1,12 +1,10 @@
-import config from './config';
-
-import ws from 'react-native-websocket'
-
-// var ws = config.staging.host;
+import config from './config.js';
+// const WebSocket = require('ws');
+const ws = new WebSocket('ws://' + config.host + ':' + config.port);
 
 ws.onopen = () => {
   // connection opened
-  ws.send('something'); // send a message
+  ws.send('fkbsdfj');
 };
 
 ws.onmessage = (e) => {
@@ -23,3 +21,5 @@ ws.onclose = (e) => {
   // connection closed
   console.log(e.code, e.reason);
 };
+
+export default ws;

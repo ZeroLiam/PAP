@@ -1,5 +1,6 @@
 const staging = {
-	host: "localhost:8080"
+	host: 'localhost', //just testing, REMEMBER TO CHANGE
+	port: '8080'
 }
 
 export default staging;
