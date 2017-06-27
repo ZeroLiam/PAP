@@ -1,12 +1,13 @@
 import React, {  Component } from 'react';
 import { AppRegistry, Image, StyleSheet, Text, View } from 'react-native';
-import Mainstyles from './app/styles/Mainstyles.js'
-import config from './app/lib/config.js'
-import ws_client from './app/lib/ws_client.js'
+import Mainstyles from './app/styles/Mainstyles.js';
+import config from './app/lib/config.js';
+import ws_client from './app/lib/ws_client.js';
 
 export default class PhoneAsPixel extends Component {
   componentDidMount(){
     console.log("componentDidMount");
+    // ws_client.send("hello");
   }
 
   render() {

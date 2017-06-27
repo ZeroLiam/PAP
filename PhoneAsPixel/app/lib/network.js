@@ -1,7 +1,7 @@
 import config from './config.js';
 
 export default function ajax(opts) {
-    return window.$.ajax(Object.assign({
+    return $.ajax(Object.assign({
         url: `${config.host}${opts.path}`,
         dataType: 'json',
         data: opts.data,
