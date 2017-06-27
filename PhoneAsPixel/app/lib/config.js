@@ -1,5 +1,5 @@
 const staging = {
-	host: 'localhost', //just testing, REMEMBER TO CHANGE
+	host: '127.0.0.1', //just testing, REMEMBER TO CHANGE
 	port: '8080'
 }
 
