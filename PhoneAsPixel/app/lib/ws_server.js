@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 var WebSocketServer = require('websocket').server;
 var http = require('http');
+var conf = require('./config.js');
 
 var server = http.createServer(function(request, response) {
     console.log((new Date()) + ' Received request for ' + request.url);
     response.writeHead(404);
     response.end();
 });
-server.listen(3000, function() {
+server.listen(conf.port, function() {
     console.log((new Date()) + ' Server is listening on port 3000');
 });
 

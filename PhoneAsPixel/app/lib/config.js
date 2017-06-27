@@ -1,6 +1,7 @@
 const staging = {
-	host: '127.0.0.1', //just testing, REMEMBER TO CHANGE
-	port: '8080'
+	host: '192.168.0.100', //just testing, REMEMBER TO CHANGE
+	port: '3000',
+	protocol: 'echo-protocol'
 }
 
 export default staging;

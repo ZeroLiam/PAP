@@ -1,14 +1,12 @@
 import config from './config';
-let hostname = "127.0.0.1";
-let port = "3000";
-const ws = new WebSocket("ws://" + hostname + ":" + port + "/echo/websocket");
+const ws = new WebSocket("ws://" + config.host + ":" + config.port, config.protocol);
 
 // var ws = config.staging.host;
 
 ws.onopen = () => {
   // connection opened
   console.log("OPEN");
-  // ws.send('something'); // send a message
+  ws.send('something'); // send a message
 };
 
 ws.onmessage = (e) => {
