@@ -9,34 +9,36 @@ export default class PhoneAsPixel extends Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
-      id: '',
-      img: '',
-      posX: 0,
-      posY: 0
+        data: {}
     }
   }
 
-  componentDidMount(){
-    console.log("componentDidMount");
+  componentDidMount() {
+    let dtobj = {};
     socketio.on('connect', () => {
       console.log("socketio.id: " + socketio.id); // Generate ID of client
       //Change the id of client and send it to the server
-      this.setState({id: socketio.id}, () => {socketio.emit('joinimg', this.state);});
-
+      dtobj.id = socketio.id;
     });
     socketio.on('message', (data) =>{
-      //Get Image from server
-      this.setState({img: data.img}, () => {console.log(this.state.img)});
-      console.log('user received: ' + data.img);
+      //Get Image and color from server
+      dtobj.img = data.img;
+      dtobj.color = data.color;
+      console.log('user received: ' + dtobj.color);
+      this.setState({data: dtobj});
     });
     socketio.on('disconnect', () =>{
       console.log('user disconnected');
     });
-
   }
 
   render() {
+    console.log('this.state');
+    console.log(this.state.data.color);
+
+    let conio = this.state.data.color;
 
     let imgStyles = StyleSheet.create({
       sharedImg:{
@@ -45,15 +47,17 @@ export default class PhoneAsPixel extends Component {
         height: 765,
         top: -45,
         left: -45,
+      },
+      starterImg: {
+        width: 1920,
+        height: 765,
+        backgroundColor: this.state.data.color,
       }
     });
 
     return (
-      <View style={Mainstyles.container}>
-        <Image source={{uri: this.state.img}}
-              style={imgStyles.sharedImg} />
+      <View style={imgStyles.starterImg}>
       </View>
-
     );
   }
 }

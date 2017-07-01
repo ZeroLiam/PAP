@@ -14,6 +14,16 @@ var devObj = {};
 var dataObj = {};
 var tstImg = 'http://mediang.gameswelt.net/public/images/201606/7962b7e8b6aaf20d6c5900418335fcbb.jpg';
 
+//Generate a random color for each client
+function getRandomColor() {
+	var letters = '0123456789ABCDEF';
+	var color = '#';
+	for (var i = 0; i < 6; i++) {
+	  color += letters[Math.floor(Math.random() * 16)];
+	}
+	return color;
+}
+
 app.get('/', function(req, res){
   res.send('<h1>Setting up server</h1>');
 });
@@ -21,22 +31,30 @@ app.get('/', function(req, res){
 sockio.on('connection', function(socketclient){
   console.log('a user connected:' + socketclient.id);
 	devObj[socketclient.id] = {socket: socketclient};
+	dataObj = {
+		id: socketclient.id,
+		color: getRandomColor(),
+		connected: true,
+		msg: 'I can see you Mr. ' + socketclient.id,
+		img: tstImg
+	};
 
+		//sends data to specific id
+		sockio.sockets.connected[socketclient.id].emit('message', dataObj);
 
-	socketclient.on('joinimg', function(msg){
-		console.log(msg);
-		dataObj = {id: msg.id, connected: true, msg: 'I can see you Mr. ' + msg.id, img: tstImg};
-			// devObj[socketclient.id].img = tstImg;
-			// devObj[socketclient.id].connected = true;
-			// devObj[socketclient.id].message = 'I can see you Mr. ' + msg.id;
-			// console.log(dataObj);
-			// devObj[socketclient.id].dtObj = dataObj;
-			// devObj[socketclient.id] = {connected: true, msg: 'I can see you Mr. ' + msg.id};
-	    // console.log('message: ' + msg.id);
-			//sends data to specific id
-			sockio.sockets.connected[socketclient.id].emit('message', dataObj);
-			// console.log("Source img: " + devObj[socketclient.id].img);
-  });
+	// socketclient.on('joinimg', function(msg){
+	// 	console.log(msg);
+	// 	dataObj = {
+	// 		id: msg.id,
+	// 		color: getRandomColor(),
+	// 		connected: true,
+	// 		msg: 'I can see you Mr. ' + msg.id,
+	// 		img: tstImg
+	// 	};
+	//
+	// 		//sends data to specific id
+	// 		sockio.sockets.connected[socketclient.id].emit('message', dataObj);
+  // });
 });
 
 
