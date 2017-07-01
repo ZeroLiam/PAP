@@ -9,35 +9,49 @@ export default class PhoneAsPixel extends Component {
 
   constructor(props) {
     super(props);
-
+    this.state = {
+      id: '',
+      img: '',
+      posX: 0,
+      posY: 0
+    }
   }
 
   componentDidMount(){
     console.log("componentDidMount");
-    let dt = {};
     socketio.on('connect', () => {
-      console.log("socketio.id: " + socketio.id); // 'G5p5...'
-      dt.id = socketio.id;
-      socketio.emit('joinimg', dt);
+      console.log("socketio.id: " + socketio.id); // Generate ID of client
+      //Change the id of client and send it to the server
+      this.setState({id: socketio.id}, () => {socketio.emit('joinimg', this.state);});
+
     });
-    socketio.on('disconnect', function(){
+    socketio.on('message', (data) =>{
+      //Get Image from server
+      this.setState({img: data.img}, () => {console.log(this.state.img)});
+      console.log('user received: ' + data.img);
+    });
+    socketio.on('disconnect', () =>{
       console.log('user disconnected');
     });
+
   }
 
   render() {
+
+    let imgStyles = StyleSheet.create({
+      sharedImg:{
+        resizeMode: 'cover',
+        width: 1920,
+        height: 765,
+        top: -45,
+        left: -45,
+      }
+    });
+
     return (
       <View style={Mainstyles.container}>
-        <Text style={Mainstyles.welcome}>
-          Welcome to React Native Homie!
-        </Text>
-        <Text style={Mainstyles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={Mainstyles.instructions}>
-          Double tap R on your keyboard to reload,{'\n'}
-          Shake or press menu button for dev menu
-        </Text>
+        <Image source={{uri: this.state.img}}
+              style={imgStyles.sharedImg} />
       </View>
 
     );
