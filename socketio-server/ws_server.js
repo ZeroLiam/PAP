@@ -5,7 +5,7 @@ var sockio = require('socket.io')(http);
 //configure the connection for the server
 const config = {
 	host: '192.168.0.103',
-	port: '3000',
+	port: '3001',
 	protocol: 'echo-protocol'
 }
 
@@ -59,6 +59,6 @@ sockio.on('connection', function(socketclient){
 
 
 
-http.listen(3000, function(){
-  console.log('listening on *:3000');
+http.listen(config.port, function(){
+  console.log('listening on *: ' + config.port);
 });
