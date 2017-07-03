@@ -1,3 +1,7 @@
+#root{
+  width: 100% !important;
+  height: 100% !important;
+}
 sub .App {
   text-align: center;
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Router, Route, browserHistory, IndexRoute } from 'react-router';
+import { Router, Route, browserHistory } from 'react-router';
 
 import './App.css';
 import Index from './containers/Index';
@@ -11,8 +11,7 @@ class App extends Component {
 
     return (
       <Router history={browserHistory}>
-        <Route path="/" component={Index} >
-        </Route>
+        <Route path="/" component={Index} />
       </Router>
     );
   }

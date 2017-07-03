@@ -34,10 +34,23 @@ class Index extends Component {
   }
 
   render() {
+    console.log(this.state);
+
+    //assign colors
+    let viewPortWidth, viewPortHeight;
+    if (typeof window.innerWidth != 'undefined') {
+       viewPortWidth = window.innerWidth,
+       viewPortHeight = window.innerHeight
+     }
+
+    let maindiv = {
+      width: viewPortWidth,
+      height: viewPortHeight,
+      bgcolor: this.state.data.color
+    }
 
     return (
-      <div>
-        <h1>Here is the index. Checkout the network tab plz.</h1>
+      <div style={{backgroundColor: maindiv.bgcolor, width: maindiv.width, height: maindiv.height}}>
       </div>
     );
   }
