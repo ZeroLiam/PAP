@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 import './../App.css';
 import socketio from './../lib/ws_client';
-import socketcli from 'socket.io-client';
-import _ from 'lodash';
 
 class Index extends Component {
   constructor(props){
@@ -21,21 +19,22 @@ class Index extends Component {
       //Change the id of client and send it to the server
       dtobj.id = socketio.id;
     });
-    socketio.on('message', (data) =>{
+    socketio.on('setdata', (data) =>{
       //Get Image and color from server
       dtobj.img = data.img;
       dtobj.color = data.color;
-      console.log('user received: ' + dtobj.color);
       this.setState({data: dtobj});
+      //emit to server this color and id
+      socketio.emit('devices', dtobj);
+
     });
     socketio.on('disconnect', () =>{
       console.log('user disconnected');
     });
+
   }
 
   render() {
-    console.log(this.state);
-
     //assign colors
     let viewPortWidth, viewPortHeight;
     if (typeof window.innerWidth != 'undefined') {

@@ -1,6 +1,7 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var sockio = require('socket.io')(http);
+var _ = require('lodash');
 
 //configure the connection for the server
 const config = {
@@ -12,6 +13,7 @@ const config = {
 //Make the object for the devices and properties
 var devObj = {};
 var dataObj = {};
+var clientObj = [];
 var tstImg = 'http://mediang.gameswelt.net/public/images/201606/7962b7e8b6aaf20d6c5900418335fcbb.jpg';
 
 //Generate a random color for each client
@@ -38,25 +40,23 @@ sockio.on('connection', function(socketclient){
 		msg: 'I can see you Mr. ' + socketclient.id,
 		img: tstImg
 	};
+	//sends the generated data to specific id
+	sockio.sockets.connected[socketclient.id].emit('setdata', dataObj);
 
-		//sends data to specific id
-		sockio.sockets.connected[socketclient.id].emit('message', dataObj);
+		//do we have a list of colors and ids?
+		console.log("length: " + sockio.engine.clientsCount);
+		// console.log(sockio);
 
-	// socketclient.on('joinimg', function(msg){
-	// 	console.log(msg);
-	// 	dataObj = {
-	// 		id: msg.id,
-	// 		color: getRandomColor(),
-	// 		connected: true,
-	// 		msg: 'I can see you Mr. ' + msg.id,
-	// 		img: tstImg
-	// 	};
-	//
-	// 		//sends data to specific id
-	// 		sockio.sockets.connected[socketclient.id].emit('message', dataObj);
-  // });
+		//Get the data from all the minions
+		socketclient.on('devices', function(data){
+				//Only phones will send this event
+				// clientObj.push(data);
+				console.log(sockio.sockets.clients().adapter.nsp.connected);
+				//sends all the minions to BigBro™
+				// sockio.emit('getcolors', data);
+		});
+
 });
-
 
 
 http.listen(config.port, function(){
