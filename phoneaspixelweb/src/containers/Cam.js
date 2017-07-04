@@ -36,7 +36,7 @@ class Cam extends Component {
   }
 
   camtrack(){
-      this.contxt = this.canvas.getContext('2d');
+      // this.contxt = this.canvas.getContext('2d');
       let tracker = new tracking.ColorTracker();
       console.log("this.state");
       console.log(this.state);
@@ -60,6 +60,8 @@ class Cam extends Component {
         tracking.track('#video', tracker, { camera: true });
 
         tracker.on('track', (event)=> {
+          this.contxt = this.refs.camera.getContext('2d');
+          this.canvas = this.refs.camera;
           this.contxt.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
           event.data.forEach((rect) =>{
@@ -109,7 +111,7 @@ class Cam extends Component {
         <h1>Camera driver</h1>
         <div>
             <video id="video" style={camstyle.videocam} ref={(vid) => { this.video = vid; }} width="600" height="450" preload autoPlay loop muted controls></video>
-            <canvas id="canvas" style={camstyle.videocam}  ref={(cam) => { this.camera = cam; }} width="600" height="450"></canvas>
+            <canvas id="canvas" style={camstyle.videocam}  ref="camera" width="600" height="450"></canvas>
         </div>
       </div>
     );
