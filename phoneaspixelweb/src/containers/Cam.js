@@ -30,9 +30,13 @@ class Cam extends Component {
     socketio.on('disconnect', () =>{
       console.log('user disconnected');
     });
+
+    //setup the tracking for the colors
+    this.camtrack();
   }
 
   camtrack(){
+      this.contxt = this.canvas.getContext('2d');
       let tracker = new tracking.ColorTracker();
       console.log("this.state");
       console.log(this.state);
@@ -54,6 +58,25 @@ class Cam extends Component {
 
         let colors = new tracking.ColorTracker(newColorNames);
         tracking.track('#video', tracker, { camera: true });
+
+        tracker.on('track', (event)=> {
+          this.contxt.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+          event.data.forEach((rect) =>{
+            if (rect.color === 'custom') {
+              rect.color = tracker.customColor;
+            }
+
+            this.contxt.strokeStyle = rect.color;
+            this.contxt.strokeRect(rect.x, rect.y, rect.width, rect.height);
+            this.contxt.font = '11px Helvetica';
+            this.contxt.fillStyle = "#fff";
+            this.contxt.fillText('x: ' + rect.x + 'px', rect.x + rect.width + 5, rect.y + 11);
+            this.contxt.fillText('y: ' + rect.y + 'px', rect.x + rect.width + 5, rect.y + 22);
+          });
+        });
+
+      //  initGUIControllers(tracker);
   }
 
   convertToRGB(color){
@@ -73,7 +96,6 @@ class Cam extends Component {
 
   render() {
 
-    this.camtrack();
     let camstyle = {
       videocam: {
         marginLeft: '100px',
