@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './../App.css';
 import socketio from './../lib/ws_client';
-import socketcli from 'socket.io-client';
 import tracking from 'tracking';
 import _ from 'lodash';
 
@@ -15,26 +14,18 @@ class Cam extends Component {
     let contxt = null;
 
     this.state = {
-        data: {}
+        data: []
     }
   }
 
   componentDidMount(){
-    let clientdt = {};
     socketio.on('connect', () => {
       console.log("socketio.id: " + socketio.id); // Generate ID of client
       //Change the id of client and send it to the server
-      clientdt.id = socketio.id;
-    });
-    socketio.on('getcolors', (dt) =>{
-      console.log(data);
-      //Get Image and color from server
-      // clientdt.id = data.id;
-      // clientdt.color = data.color;
-      // clientdt.img = data.img;
-
-      // console.log('user received: ' + clientdt.color);
-      this.setState({data: dt});
+      // clientdt.id = socketio.id;
+      socketio.on('getcolors', (dt) =>{
+        this.setState({data: dt});
+      });
     });
     socketio.on('disconnect', () =>{
       console.log('user disconnected');
@@ -44,8 +35,39 @@ class Cam extends Component {
   camtrack(){
       let tracker = new tracking.ColorTracker();
       console.log("this.state");
-      console.log(this.state.data.id);
-        // let colors = new tracking.ColorTracker(['magenta', 'cyan', 'yellow']);
+      console.log(this.state);
+      let allColors = [];
+      let newColorNames = [];
+      //Change colors each time we get a new set of colors
+      _.forEach(this.state.data, (value, key)=>{
+        console.log(value.id + " " + value.color);
+        let newColor = this.convertToRGB(value.color);
+        newColorNames.push(value.id);
+
+        tracking.ColorTracker.registerColor(value.id, function(r, g, b) {
+          if (r < newColor[0] && g > newColor[1] && b < newColor[2]) {
+            return true;
+          }
+          return false;
+        });
+      });
+
+        let colors = new tracking.ColorTracker(newColorNames);
+        tracking.track('#video', tracker, { camera: true });
+  }
+
+  convertToRGB(color){
+    //We start in 1 because the # sign is on 0 position.
+    let r = color.slice(1,3);
+    let g = color.slice(3,5);
+    let b = color.slice(5,7);
+    let newr = parseInt(r, 16);
+    let newg = parseInt(g, 16);
+    let newb = parseInt(b, 16);
+    let newrgb = [newr, newg, newb];
+
+    return newrgb;
+
   }
 
 
@@ -64,8 +86,8 @@ class Cam extends Component {
       <div>
         <h1>Camera driver</h1>
         <div>
-            <video style={camstyle.videocam} ref={(vid) => { this.video = vid; }} width="600" height="450" preload autoPlay loop muted controls></video>
-            <canvas style={camstyle.videocam}  ref={(cam) => { this.camera = cam; }} width="600" height="450"></canvas>
+            <video id="video" style={camstyle.videocam} ref={(vid) => { this.video = vid; }} width="600" height="450" preload autoPlay loop muted controls></video>
+            <canvas id="canvas" style={camstyle.videocam}  ref={(cam) => { this.camera = cam; }} width="600" height="450"></canvas>
         </div>
       </div>
     );

@@ -30,7 +30,11 @@ app.get('/', function(req, res){
   res.send('<h1>Setting up server</h1>');
 });
 
+let minions = [];
+
 sockio.on('connection', function(socketclient){
+	minions.push(socketclient);
+
   console.log('a user connected:' + socketclient.id);
 	devObj[socketclient.id] = {socket: socketclient};
 	dataObj = {
@@ -45,15 +49,35 @@ sockio.on('connection', function(socketclient){
 
 		//do we have a list of colors and ids?
 		console.log("length: " + sockio.engine.clientsCount);
-		// console.log(sockio);
 
-		//Get the data from all the minions
+		socketclient.on('disconnect', () => {
+				console.log('Got disconnect! ' + socketclient.id);
+
+				//trace back update on connected minions
+				for(let px = 0; px < clientObj.length; px++){
+					if(clientObj[px].id == socketclient.id){
+						console.log("I SHOULD POP THIS GUY --> " + clientObj[px].id);
+						clientObj.splice(px, 1);
+					}
+				}
+
+	      let i = minions.indexOf(socketclient);
+	      minions.splice(i, 1);
+
+				//sends all the updated minions to BigBro™
+				sockio.emit('getcolors', clientObj);
+		});
+
+		// Get the data from all the minions
 		socketclient.on('devices', function(data){
 				//Only phones will send this event
-				// clientObj.push(data);
-				console.log(sockio.sockets.clients().adapter.nsp.connected);
+				for(let px = 0; px < minions.length; px++){
+					if(data.id == minions[px].id){
+						clientObj.push(data);
+					}
+				}
 				//sends all the minions to BigBro™
-				// sockio.emit('getcolors', data);
+				sockio.emit('getcolors', clientObj);
 		});
 
 });

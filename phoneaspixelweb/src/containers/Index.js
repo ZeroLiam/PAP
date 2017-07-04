@@ -23,6 +23,7 @@ class Index extends Component {
       //Get Image and color from server
       dtobj.img = data.img;
       dtobj.color = data.color;
+      dtobj.connected = true;
       this.setState({data: dtobj});
       //emit to server this color and id
       socketio.emit('devices', dtobj);
