@@ -5,7 +5,7 @@ var _ = require('lodash');
 
 //configure the connection for the server
 const config = {
-	host: '192.168.0.103',
+	host: '192.168.0.101',
 	port: '3001',
 	protocol: 'echo-protocol'
 }
@@ -26,6 +26,14 @@ function getRandomColor() {
 	return color;
 }
 
+///Generate a random preset color for each client
+//This is for the demo, using tracking JS
+function getRandomPresetColor() {
+	var colors = ['magenta', 'cyan'];
+	var color = colors[Math.floor(Math.random() * 2)];
+	return color;
+}
+
 app.get('/', function(req, res){
   res.send('<h1>Setting up server</h1>');
 });
@@ -39,7 +47,7 @@ sockio.on('connection', function(socketclient){
 	devObj[socketclient.id] = {socket: socketclient};
 	dataObj = {
 		id: socketclient.id,
-		color: getRandomColor(),
+		color: getRandomPresetColor(),
 		connected: true,
 		msg: 'I can see you Mr. ' + socketclient.id,
 		img: tstImg
@@ -78,6 +86,11 @@ sockio.on('connection', function(socketclient){
 				}
 				//sends all the minions to BigBro™
 				sockio.emit('getcolors', clientObj);
+		});
+
+		socketclient.on("dummy", function(data){
+			console.log("WE ARE DUMMY");
+			console.log(data);
 		});
 
 });

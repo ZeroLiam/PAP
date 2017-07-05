@@ -39,27 +39,32 @@ class Cam extends Component {
       let tracker = new tracking.ColorTracker();
       console.log("this.state");
       console.log(this.state);
-      let allColors = [];
-      let newColorNames = [];
+      // let allColors = [];
+      // let newColorNames = [];
       //Change colors each time we get a new set of colors
-      _.forEach(this.state.data, (value, key)=>{
-        console.log(value.id + " " + value.color);
-        let newColor = this.convertToRGB(value.color);
-        newColorNames.push(value.id);
-        console.log(value.id);
+      // _.forEach(this.state.data, (value, key)=>{
+      //   console.log(value.id + " " + value.color);
+      //   let newColor = this.convertToRGB(value.color);
+      //   newColorNames.push(value.id);
+      //   console.log(value.id);
+      //
+      //   tracking.ColorTracker.registerColor(value.id, function(r, g, b) {
+      //     if (r < newColor[0] && g > newColor[1] && b < newColor[2]) {
+      //       return true;
+      //     }
+      //     return false;
+      //   });
+      // });
 
-        tracking.ColorTracker.registerColor(value.id, function(r, g, b) {
-          if (r < newColor[0] && g > newColor[1] && b < newColor[2]) {
-            return true;
-          }
-          return false;
-        });
-      });
+        let colors = new tracking.ColorTracker(['magenta', 'cyan']);
+        let dummy = {
+          cyanx: 0,
+          cyany: 0,
+          magx: 0,
+          magy:0
+        };
 
-        let colors = new tracking.ColorTracker(newColorNames);
-        tracking.track('#video', tracker, { camera: true });
-
-        tracker.on('track', (event)=> {
+        colors.on('track', (event)=> {
           this.contxt = this.refs.camera.getContext('2d');
           this.canvas = this.refs.camera;
           this.contxt.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -75,8 +80,32 @@ class Cam extends Component {
             this.contxt.fillStyle = "#fff";
             this.contxt.fillText('x: ' + rect.x + 'px', rect.x + rect.width + 5, rect.y + 11);
             this.contxt.fillText('y: ' + rect.y + 'px', rect.x + rect.width + 5, rect.y + 22);
+            console.log('x: ' + rect.x + 'px', rect.x + rect.width + 5, rect.y + 11);
+
+            for(let op = 0; op < this.state.data.length; op++){
+                if(rect.color == 'cyan'){
+                  dummy.cyanx = rect.x;
+                  dummy.cyany = rect.y;
+
+                  this.setState({data: {op: {posy: {$set: rect.y}}}});
+                }
+                if(rect.color == 'magenta'){
+                  dummy.magx = rect.x;
+                  dummy.magy = rect.y;
+                  this.setState({data: {op: {posy: {$set: rect.y}}}});
+                }
+            }
           });
         });
+
+        let trackerTask = tracking.track('#video', colors, { camera: true });
+        window.setTimeout(()=>{
+          trackerTask.stop();
+          console.log("dummy.cyanx " + dummy.cyanx);
+          console.log("dummy.magx " + dummy.magx);
+          socketio.emit("dummy", dummy);
+
+        }, 2500);
 
       //  initGUIControllers(tracker);
   }
