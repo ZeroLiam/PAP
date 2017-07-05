@@ -30,9 +30,8 @@ class Cam extends Component {
     socketio.on('disconnect', () =>{
       console.log('user disconnected');
     });
-
-    //setup the tracking for the colors
-    this.camtrack();
+      //setup the tracking for the colors
+      this.camtrack();
   }
 
   camtrack(){
@@ -47,6 +46,7 @@ class Cam extends Component {
         console.log(value.id + " " + value.color);
         let newColor = this.convertToRGB(value.color);
         newColorNames.push(value.id);
+        console.log(value.id);
 
         tracking.ColorTracker.registerColor(value.id, function(r, g, b) {
           if (r < newColor[0] && g > newColor[1] && b < newColor[2]) {
@@ -97,7 +97,6 @@ class Cam extends Component {
 
 
   render() {
-
     let camstyle = {
       videocam: {
         marginLeft: '100px',
