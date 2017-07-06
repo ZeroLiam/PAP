@@ -47,7 +47,7 @@ sockio.on('connection', function(socketclient){
 	devObj[socketclient.id] = {socket: socketclient};
 	dataObj = {
 		id: socketclient.id,
-		color: getRandomPresetColor(),
+		color: getRandomColor(),
 		connected: true,
 		msg: 'I can see you Mr. ' + socketclient.id,
 		img: tstImg

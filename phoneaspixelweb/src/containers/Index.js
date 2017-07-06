@@ -37,24 +37,21 @@ class Index extends Component {
       console.log(posObj);
       for( let idx = 0; idx < posObj.length; idx++){
         if(posObj[idx].id == this.state.data.id){
-          // // console.log(posObj[idx]);
-          // console.log("this.state.data");
-          // console.log(this.state.data);
           let newDataState = update(this.state.data, {
             posx: {$set: posObj[idx].posx}, posy: {$set: posObj[idx].posy}, display: {$set: 'block'}
           });
-          //
-          // console.log("newDataState");
-          // console.log(newDataState);
 
           this.setState({data: newDataState});
-          // console.log("this.state.data");
-          // console.log(this.state.data);
         }
       }
 
     });
     socketio.on('disconnect', () =>{
+      let displayStat = update(this.state.data, {
+        display: {$set: 'none'}
+      });
+      this.setState({data: displayStat});
+      
       console.log('user disconnected');
     });
 
