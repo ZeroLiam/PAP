@@ -91,6 +91,10 @@ sockio.on('connection', function(socketclient){
 		socketclient.on("dummy", function(data){
 			console.log("WE ARE DUMMY");
 			console.log(data);
+			for(let op = 0; op < data.length; op++){
+				let currentClient = data[op];
+				sockio.sockets.connected[currentClient.id].emit('setPosition', data);
+			}
 		});
 
 });

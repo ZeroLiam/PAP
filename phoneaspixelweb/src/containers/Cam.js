@@ -24,21 +24,22 @@ class Cam extends Component {
       //Change the id of client and send it to the server
       // clientdt.id = socketio.id;
       socketio.on('getcolors', (dt) =>{
-        this.setState({data: dt});
+        // this.setState({data: dt});
+        this.camtrack(dt);
       });
     });
     socketio.on('disconnect', () =>{
       console.log('user disconnected');
     });
       //setup the tracking for the colors
-      this.camtrack();
+      // this.camtrack();
   }
 
-  camtrack(){
+  camtrack(client){
       // this.contxt = this.canvas.getContext('2d');
       let tracker = new tracking.ColorTracker();
-      console.log("this.state");
-      console.log(this.state);
+      console.log("client");
+      console.log(client);
       // let allColors = [];
       // let newColorNames = [];
       //Change colors each time we get a new set of colors
@@ -57,6 +58,8 @@ class Cam extends Component {
       // });
 
         let colors = new tracking.ColorTracker(['magenta', 'cyan']);
+        let modClient = client;
+        console.log(modClient);
         let dummy = {
           cyanx: 0,
           cyany: 0,
@@ -82,17 +85,20 @@ class Cam extends Component {
             this.contxt.fillText('y: ' + rect.y + 'px', rect.x + rect.width + 5, rect.y + 22);
             console.log('x: ' + rect.x + 'px', rect.x + rect.width + 5, rect.y + 11);
 
-            for(let op = 0; op < this.state.data.length; op++){
+            for(let op = 0; op < modClient.length; op++){
                 if(rect.color == 'cyan'){
                   dummy.cyanx = rect.x;
                   dummy.cyany = rect.y;
-
-                  this.setState({data: {op: {posy: {$set: rect.y}}}});
+                  modClient[op].posx = rect.x;
+                  modClient[op].posy = rect.y;
                 }
                 if(rect.color == 'magenta'){
                   dummy.magx = rect.x;
                   dummy.magy = rect.y;
-                  this.setState({data: {op: {posy: {$set: rect.y}}}});
+                  modClient[op].posx = rect.x;
+                  modClient[op].posy = rect.y;
+
+                  //this.setState({data: {op: {posy: {$set: rect.y}}}});
                 }
             }
           });
@@ -101,9 +107,9 @@ class Cam extends Component {
         let trackerTask = tracking.track('#video', colors, { camera: true });
         window.setTimeout(()=>{
           trackerTask.stop();
-          console.log("dummy.cyanx " + dummy.cyanx);
-          console.log("dummy.magx " + dummy.magx);
-          socketio.emit("dummy", dummy);
+
+          socketio.emit("dummy", modClient);
+
 
         }, 2500);
 
