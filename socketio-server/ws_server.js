@@ -34,8 +34,9 @@ function getRandomPresetColor() {
 	return color;
 }
 
-app.get('/', function(req, res){
-  res.send('<h1>Setting up server</h1>');
+//Routes
+app.get('/', function(req, res) {
+    res.redirect('/index.html');
 });
 
 let minions = [];
@@ -47,7 +48,7 @@ sockio.on('connection', function(socketclient){
 	devObj[socketclient.id] = {socket: socketclient};
 	dataObj = {
 		id: socketclient.id,
-		color: getRandomColor(),
+		color: getRandomPresetColor(),
 		connected: true,
 		msg: 'I can see you Mr. ' + socketclient.id,
 		img: tstImg
