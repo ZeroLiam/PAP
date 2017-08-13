@@ -76,7 +76,7 @@ class Index extends Component {
       bgcolor: this.state.data.color
     }
 
-    let bgPos = (this.state.data.posy - this.state.data.devw ) * -1 + 'px ' + (this.state.data.posx - this.state.data.devh) * -1 + 'px';
+    let bgPos = (500 + (this.state.data.posy - this.state.data.devw) ) * -1 + 'px ' + (500 + (this.state.data.posx - this.state.data.devh)) * -1 + 'px';
     bgPos = bgPos.toString();
 
     console.log("my position is " + bgPos);
@@ -94,14 +94,15 @@ class Index extends Component {
       backgroundPosition: bgPos,
       src: "url(" + this.state.data.img + ")",
       backgroundRepeat: 'noRepeat',
-      top: ((this.state.data.posy - this.state.data.devw ) * -1),
-      left: ((this.state.data.posx - this.state.data.devh ) * -1),
-      clip: 'rect(' + 10 + 'px,' + 350 + 'px,' + 170 + 'px,' + 0 + ')'
+      left: (this.state.data.posx + this.state.data.devw) * -1,
+      top: ((this.state.data.posy + this.state.data.devh) * -1),
+      clip: 'rect(' + this.state.data.posy + 'px,' + (this.state.data.posx + this.state.data.devw)+ 'px,' + (this.state.data.posy + this.state.data.devh) + 'px,' + this.state.data.posx + ')'
     }
+
 
     return (
       <div style={{backgroundColor: maindiv.bgcolor, width: maindiv.width, height: maindiv.height}}>
-        <img style={{display:imgdiv.display, position: imgdiv.position, clip:imgdiv.clip, width: maindiv.width, height: maindiv.height}} src={this.state.data.img}  />
+          <div style={{display:imgdiv.display, backgroundPosition:imgdiv.backgroundPosition, backgroundImage: imgdiv.src, backgroundRepeat:'no-repeat', backgroundSize: 'cover', width:"1680px", height: "1400px"}}> </div>
       </div>
     );
   }

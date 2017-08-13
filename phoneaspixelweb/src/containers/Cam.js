@@ -177,7 +177,10 @@ class Cam extends Component {
       videocam: {
         marginLeft: '100px',
         marginTop: '35px',
-        position: 'absolute'
+        position: 'absolute',
+        // backgroundSize: 'cover',
+        // backgroundRepeat: 'no-repeat',
+        //backgroundImage: "url(http://mediang.gameswelt.net/public/images/201606/7962b7e8b6aaf20d6c5900418335fcbb.jpg)"
       }
     }
 
