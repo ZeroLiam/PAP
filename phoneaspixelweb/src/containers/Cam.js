@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './../App.css';
+import Uploader from './../components/Uploader';
 import tracking from 'tracking';
 import _ from 'lodash';
 const config = {
@@ -20,9 +21,18 @@ class Cam extends Component {
     let contxt = null;
 
     this.state = {
-        data: []
+        data: [],
+				imgsrc: "",
+				sendImage: ""
     }
   }
+
+	onUpdateImg(val){
+	    this.setState(prevState =>{
+	      prevState.imgsrc = val;
+	      return prevState;
+	    });
+	}
 
   componentDidMount(){
     socketio.on('connect', () => {
@@ -100,9 +110,9 @@ class Cam extends Component {
 
 
         let trackerTask = tracking.track('#video', colors, { camera: true });
-        window.setTimeout(()=>{
-          trackerTask.stop();
-        }, 3500);
+				window.setTimeout(() =>{
+					trackerTask.stop();
+				}, 3500);
 
         window.setTimeout(() =>{
           for(let opx = 0; opx < modClient.length; opx++){
@@ -175,22 +185,38 @@ class Cam extends Component {
   render() {
     let camstyle = {
       videocam: {
-        marginLeft: '100px',
-        marginTop: '35px',
+        marginLeft: '0px',
+        marginTop: '15px',
         position: 'absolute',
+				// backgroundColor: "rgba(0,0,0,0.1)",
         // backgroundSize: 'cover',
         // backgroundRepeat: 'no-repeat',
-        //backgroundImage: "url(http://mediang.gameswelt.net/public/images/201606/7962b7e8b6aaf20d6c5900418335fcbb.jpg)"
+        // backgroundImage: "url(http://mediang.gameswelt.net/public/images/201606/7962b7e8b6aaf20d6c5900418335fcbb.jpg)"
       }
     }
 
     return (
       <div>
-        <h1>Camera driver</h1>
-        <div>
-            <video id="video" style={camstyle.videocam} ref="video" width="680" height="400" preload autoPlay loop muted controls></video>
-            <canvas id="canvas" style={camstyle.videocam}  ref="camera" width="680" height="400"></canvas>
-        </div>
+				<div className="App-header">
+					<h3> Hello there! This is the camera driver/manager for the Phone As Pixel Web App. Enjoy! </h3>
+				</div>
+
+				<div  className="camera-wrapper">
+						<h1>Camera driver</h1>
+
+						<div className="upload-zone">
+										<h2> Choose an image to distribute on the devices </h2>
+										<div className="choose-file">
+												<Uploader onUpdate={(...args) => this.onUpdateImg(...args)}/>
+												<img className="display-image" src={this.state.imgsrc} />
+										</div>
+						</div>
+
+						<div className="camdrivers">
+								<video id="video" style={camstyle.videocam} ref="video" width="680" height="350" preload autoPlay loop muted controls></video>
+								<canvas id="canvas" style={camstyle.videocam}  ref="camera" width="680" height="350"></canvas>
+						</div>
+				</div>
       </div>
     );
   }

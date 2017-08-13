@@ -13,7 +13,7 @@ sub .App {
 
 .App-header {
   background-color: #222;
-  height: 150px;
+  height: 80px;
   padding: 20px;
   color: white;
 }
@@ -56,4 +56,74 @@ h1, h2, h3, h4, h5{
 @media (min-width: 768px)
 .navbar {
     border-radius: 0px !important;
+}
+
+.camdrivers{
+  margin-top: 50px;
+  height: 430px;
+  width: 720px;
+  border: 3px dashed rgba(255,0,255, 0.8);
+  background-color: #555;
+  color: #fff;
+  padding: 20px;
+}
+
+.camdrivers input[type=button]{
+  margin-top: 8px;
+  background-color: rgba(255,0,255, 0.8);
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: bold;
+  font-size: 18px;
+  width: 100%;
+}
+
+.upload-zone{
+    margin: 0px 0px;
+}
+
+.choose-file{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border: 2px dashed rgba(0,255,255, 0.8);
+    background-color: #555;
+    color: #fff;
+    padding: 20px 20px 35px 20px;
+    width: 500px;
+    max-width: 720px;
+    justify-content: center;
+    margin-left: 10%;
+}
+
+.uploader-container{
+    justify-self: center;
+    margin: 10px 20px;
+}
+
+.camera-wrapper{
+  width: 680px;
+  margin: auto;
+}
+
+
+.display-image{
+    height: auto;
+    width: auto;
+    max-width: 450px;
+    max-height: 270px;
+}
+
+#i_url{
+  width: 450px;
+  color: #555;
+}
+
+#i_submit{
+  margin-top: 8px;
+  background-color: #fff;
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #555;
 }
