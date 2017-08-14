@@ -5,7 +5,7 @@ import tracking from 'tracking';
 import _ from 'lodash';
 const config = {
 	host: 'localhost',//local ip, remember to change on testing
-	port: '3001',
+	port: '3000',
 	protocol: 'echo-protocol'
 }
 import SocketIOClient from 'socket.io-client';
@@ -112,20 +112,21 @@ class Cam extends Component {
         let trackerTask = tracking.track('#video', colors, { camera: true });
 				window.setTimeout(() =>{
 					trackerTask.stop();
-				}, 3500);
+				}, 4500);
 
         window.setTimeout(() =>{
-          for(let opx = 0; opx < modClient.length; opx++){
+          for(let opx = 0; opx < myevt.length; opx++){
             modClient[opx].posx = myevt[opx].x;
             modClient[opx].posy = myevt[opx].y;
             modClient[opx].devw = myevt[opx].width;
             modClient[opx].devh = myevt[opx].height;
+            modClient[opx].img = this.state.imgsrc;
 
             console.log("modClient[opx].posx");
             console.log(modClient[opx].posx);
           }
           socketio.emit("dummy", modClient);
-        }, 4000);
+        }, 5000);
   }
 
   convertToRGB(color){
