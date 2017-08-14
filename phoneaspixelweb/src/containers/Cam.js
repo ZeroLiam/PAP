@@ -19,6 +19,8 @@ class Cam extends Component {
     let video = null;
     let camera = null;
     let contxt = null;
+		let dt = [];
+		let imgsource = "";
 
     this.state = {
         data: [],
@@ -28,10 +30,22 @@ class Cam extends Component {
   }
 
 	onUpdateImg(val){
+		let source = val.replace("blob:", "");
 	    this.setState(prevState =>{
-	      prevState.imgsrc = val;
+	      prevState.imgsrc = source;
 	      return prevState;
 	    });
+			this.setNewImgSource(source);
+			//Only trigger the this.camtrack(dt) function IF there is an img loaded
+			this.camtrack(this.dt);
+	}
+
+	setNewDataObj(dt){
+	    this.dt = dt;
+	}
+
+	setNewImgSource(imgs){
+		this.imgsource = imgs;
 	}
 
   componentDidMount(){
@@ -40,15 +54,13 @@ class Cam extends Component {
       //Change the id of client and send it to the server
       // clientdt.id = socketio.id;
       socketio.on('getcolors', (dt) =>{
-        // this.setState({data: dt});
-        this.camtrack(dt);
+        // Get object and have it ready ONLY when an image is loaded
+				this.setNewDataObj(dt);
       });
     });
     socketio.on('disconnect', () =>{
       console.log('user disconnected');
     });
-      //setup the tracking for the colors
-      // this.camtrack();
   }
 
   camtrack(client){
@@ -204,7 +216,6 @@ class Cam extends Component {
 
 				<div  className="camera-wrapper">
 						<h1>Camera driver</h1>
-
 						<div className="upload-zone">
 										<h2> Choose an image to distribute on the devices </h2>
 										<div className="choose-file">

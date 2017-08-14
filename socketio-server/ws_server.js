@@ -5,7 +5,7 @@ var _ = require('lodash');
 
 //configure the connection for the server
 const config = {
-	host: '192.168.0.101',
+	host: '192.168.0.104',
 	port: '3001',
 	protocol: 'echo-protocol'
 }
@@ -96,6 +96,11 @@ sockio.on('connection', function(socketclient){
 				let currentClient = data[op];
 				sockio.sockets.connected[currentClient.id].emit('setPosition', data);
 			}
+		});
+
+		socketclient.on("cnavas", function(data){
+			console.log("CANVAS URL");
+			console.log(data);
 		});
 
 });

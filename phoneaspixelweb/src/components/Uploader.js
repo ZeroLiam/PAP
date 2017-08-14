@@ -20,11 +20,13 @@ class Uploader extends Component{
 
     $("img").fadeIn("fast").attr('src', url);
     $(".prev").attr('style', 'display:none');
+    this.props.onUpdate(url);
   }
 
   onChangeSrc(e){
     let url = e.target.value;
     $("img").fadeIn("fast").attr('src', url);
+    this.props.onUpdate(url);
   }
 
   onChangeSubmit(e){
@@ -40,6 +42,7 @@ class Uploader extends Component{
       <div className="uploader-container">
           <strong>Upload a file: </strong> <input type="file" id="i_file" value="" onChange={(...args) => this.onChangeUpload(...args)} />
           <br />
+
           <strong>or</strong>
           <div>
               <strong>Insert an URL for the image </strong><br/>

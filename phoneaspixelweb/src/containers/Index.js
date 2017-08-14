@@ -34,23 +34,27 @@ class Index extends Component {
       dtobj.devh = 0;
       dtobj.display = 'none';
       this.setState({data: dtobj});
+
       //emit to server this color and id
       socketio.emit('devices', dtobj);
-
     });
+
     socketio.on('setPosition', (posObj) => {
-      console.log(posObj);
-      for( let idx = 0; idx < posObj.length; idx++){
-        if(posObj[idx].id == this.state.data.id){
-          let newDataState = update(this.state.data, {
-            posx: {$set: posObj[idx].posx}, posy: {$set: posObj[idx].posy}, display: {$set: 'block'}, devw: {$set: posObj[idx].devw}, devh: {$set: posObj[idx].devh}
-          });
+          console.log(posObj);
+          for( let idx = 0; idx < posObj.length; idx++){
+            if(posObj[idx].id == this.state.data.id){
 
-          this.setState({data: newDataState});
-        }
-      }
+              let newDataState = update(this.state.data, {
+                img: {$set: posObj[idx].img}, posx: {$set: posObj[idx].posx}, posy: {$set: posObj[idx].posy}, display: {$set: 'block'}, devw: {$set: posObj[idx].devw}, devh: {$set: posObj[idx].devh}
+              });
+              this.setState({data: newDataState});
 
-    });
+            }
+          }
+      });
+
+      //context.drawImage(myImage, posObj[idx].posx * posObj[idx].devw, posObj[idx].posy * posObj[idx].devh, posObj[idx].devw, posObj[idx].devh, 0, 0, canvas.width, canvas.height);
+
     socketio.on('disconnect', () =>{
       let displayStat = update(this.state.data, {
         display: {$set: 'none'}
@@ -76,33 +80,49 @@ class Index extends Component {
       bgcolor: this.state.data.color
     }
 
-    let bgPos = (500 + (this.state.data.posy - this.state.data.devw) ) * -1 + 'px ' + (500 + (this.state.data.posx - this.state.data.devh)) * -1 + 'px';
-    bgPos = bgPos.toString();
-
-    console.log("my position is " + bgPos);
-
-    let theimg = new Image();
-    theimg.src = this.state.data.img;
-    let canv = this.refs.canvas;
+    // let bgPos = (500 + (this.state.data.posy - this.state.data.devw) ) * -1 + 'px ' + (500 + (this.state.data.posx - this.state.data.devh)) * -1 + 'px';
+    // bgPos = bgPos.toString();
+    //
+    // console.log("my position is " + bgPos);
+    //
+    // let theimg = new Image();
+    // theimg.src = this.state.data.img;
+    // let canv = this.refs.canvas;
     // let cont = canv.getContext('2d');
     // cont.drawImage(this.state.data.img, this.state.data.posx, this.state.data.posy, this.state.data.devw, this.state.data.devh);
 
 
-    let imgdiv = {
-      position: 'absolute',
-      display: this.state.data.display,
-      backgroundPosition: bgPos,
-      src: "url(" + this.state.data.img + ")",
-      backgroundRepeat: 'noRepeat',
-      left: (this.state.data.posx + this.state.data.devw) * -1,
-      top: ((this.state.data.posy + this.state.data.devh) * -1),
-      clip: 'rect(' + this.state.data.posy + 'px,' + (this.state.data.posx + this.state.data.devw)+ 'px,' + (this.state.data.posy + this.state.data.devh) + 'px,' + this.state.data.posx + ')'
-    }
+        // let imgdiv = {
+        //   position: 'absolute',
+        //   display: this.state.data.display,
+        //   backgroundPosition: bgPos,
+        //   src: "url(" + this.state.data.img + ")",
+        //   backgroundRepeat: 'noRepeat',
+        //   left: (this.state.data.posx + this.state.data.devw) * -1,
+        //   top: ((this.state.data.posy + this.state.data.devh) * -1),
+        //   clip: 'rect(' + this.state.data.posy + 'px,' + (this.state.data.posx + this.state.data.devw)+ 'px,' + (this.state.data.posy + this.state.data.devh) + 'px,' + this.state.data.posx + ')'
+        // }
+
+        let bgPos_xwidth = (this.state.data.posx * this.state.data.devw);
+        let bgPos_yheight =(this.state.data.posy * this.state.data.devh);
+        let bgPos_w = (this.state.data.devw);
+        let bgPos_h = (this.state.data.devh);
+
+        let imgdiv = {
+          position: 'absolute',
+          display: this.state.data.display,
+          backgroundPosition: (bgPos_xwidth * -1) + "px " + (bgPos_yheight * -1) + "px",
+          src: "url(" + this.state.data.img + ")",
+          backgroundRepeat: 'noRepeat',
+          left: bgPos_xwidth,
+          top: bgPos_yheight
+          // clip: 'rect(' + this.state.data.posy + 'px,' + (this.state.data.posx + this.state.data.devw)+ 'px,' + (this.state.data.posy + this.state.data.devh) + 'px,' + this.state.data.posx + ')'
+        }
 
 
     return (
       <div style={{backgroundColor: maindiv.bgcolor, width: maindiv.width, height: maindiv.height}}>
-          <div style={{display:imgdiv.display, backgroundPosition:imgdiv.backgroundPosition, backgroundImage: imgdiv.src, backgroundRepeat:'no-repeat', backgroundSize: 'cover', width:"1680px", height: "1400px"}}> </div>
+          <div ref="displayimg" id="displayimg" style={{width:this.state.data.devw, height:this.state.data.devh, backgroundImage: imgdiv.backgroundImage, backgroundSize: 'cover', backgroundPosition: imgdiv.backgroundPosition}}> </div>
       </div>
     );
   }
