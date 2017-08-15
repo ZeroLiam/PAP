@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import './../App.css';
+import $ from 'jquery';
 import Uploader from './../components/Uploader';
 import tracking from 'tracking';
 import _ from 'lodash';
 const config = {
 	host: 'localhost',//local ip, remember to change on testing
-	port: '3000',
+	port: '3001',
 	protocol: 'echo-protocol'
 }
 import SocketIOClient from 'socket.io-client';
@@ -19,6 +20,8 @@ class Cam extends Component {
     let video = null;
     let camera = null;
     let contxt = null;
+		let vidHeight = 0;
+		let vidWidth = 0;
 		let dt = [];
 		let imgsource = "";
 
@@ -30,7 +33,11 @@ class Cam extends Component {
   }
 
 	onUpdateImg(val){
-		let source = val.replace("blob:", "");
+		//When it's by upload
+		// let source = val.replace("blob:", "");
+
+		//When it's by URL
+			let source = val;
 	    this.setState(prevState =>{
 	      prevState.imgsrc = source;
 	      return prevState;
@@ -68,17 +75,6 @@ class Cam extends Component {
       console.log(client);
       let allColors = [];
       let newColorNames = [];
-       //Change colors each time we get a new set of colors
-      // _.forEach(client, (value, key)=>{
-        // console.log(value.id + " " + value.color);
-        // let newColor = this.convertToRGB(value.color);
-        // newColorNames.push(value.id);
-        // console.log("value.id");
-        // console.log(value.id);
-        // let r = newColor[0];
-        // let g = newColor[1];
-        // let b = newColor[2];
-      // });
 
 
         let colors = new tracking.ColorTracker(['magenta', 'cyan']);
@@ -106,6 +102,14 @@ class Cam extends Component {
           myevt = event.data;
 
           event.data.forEach((rect) =>{
+						this.video = document.getElementById("video");
+						if(this.video != null){
+								// this.video.addEventListener( "loadedmetadata", (e)=> {
+							    this.vidWidth = this.video.videoWidth,
+							    this.vidHeight = this.video.videoHeight;
+								// }, false );
+						}
+
             if (rect.color === 'custom') {
               rect.color = colors.customColor;
             }
@@ -121,21 +125,30 @@ class Cam extends Component {
         });
 
 
+
         let trackerTask = tracking.track('#video', colors, { camera: true });
 				window.setTimeout(() =>{
 					trackerTask.stop();
 				}, 4500);
 
         window.setTimeout(() =>{
+					let c = 0;
+					let c2 = 0;
           for(let opx = 0; opx < myevt.length; opx++){
-            modClient[opx].posx = myevt[opx].x;
-            modClient[opx].posy = myevt[opx].y;
-            modClient[opx].devw = myevt[opx].width;
-            modClient[opx].devh = myevt[opx].height;
-            modClient[opx].img = this.state.imgsrc;
+            if(myevt[opx] != undefined){
+							modClient[opx].posx = myevt[opx].x;
+	            modClient[opx].posy = myevt[opx].y;
+	            // modClient[opx].devw = this.vidWidth;
+	            // modClient[opx].devh = this.vidHeight;
+	            modClient[opx].devw = myevt[opx].width;
+	            modClient[opx].devh = myevt[opx].height;
+	            modClient[opx].img = this.state.imgsrc;
+							modClient[opx].display = 'block';
 
-            console.log("modClient[opx].posx");
-            console.log(modClient[opx].posx);
+							console.log("video w: ", this.vidWidth);
+	            console.log("modClient[opx].posx");
+	            console.log(modClient[opx].posx);
+						}
           }
           socketio.emit("dummy", modClient);
         }, 5000);

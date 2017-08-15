@@ -31,6 +31,14 @@ class Uploader extends Component{
 
   onChangeSubmit(e){
     e.preventDefault();
+
+    let url = $("#i_url").val();
+    if(url && (url != null || url != '') && (url.match(/(\.jpg|\.jpeg|\.png|\.gif)$/g))){
+      $("img").fadeIn("fast").attr('src', url);
+      this.props.onUpdate(url);
+    }else{
+      $(".warning-img").css("display", "block");
+    }
   }
 
   render(){
@@ -38,15 +46,19 @@ class Uploader extends Component{
       display: 'none'
     }
 
+    /*
+    * In case we want to make the functionality for upload, let's have this here:
+          <strong>Upload a file: </strong> <input type="file" id="i_file" value="" onChange={(...args) => this.onChangeUpload(...args)} />
+          <br /><strong>or</strong>
+    */
     return(
       <div className="uploader-container">
-          <strong>Upload a file: </strong> <input type="file" id="i_file" value="" onChange={(...args) => this.onChangeUpload(...args)} />
-          <br />
 
-          <strong>or</strong>
           <div>
               <strong>Insert an URL for the image </strong><br/>
-              <input type="url" id="i_url" placeholder="image url here" onChange={(...args) => this.onChangeSrc(...args)} />
+              <input type="url" id="i_url" placeholder="image url here" /><br/>
+              <input type="button" id="i_button" name="i_button" value="Send Image to Devices!" onClick={(...args) => this.onChangeSubmit(...args)} /><br/><br/>
+              <strong className="warning-img" style={{display: 'none'}}>Hey, the URL field is empty or not valid. Try again with a real url image.</strong>
           </div>
       </div>
     );
