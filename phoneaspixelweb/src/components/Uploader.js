@@ -45,7 +45,6 @@ class Uploader extends Component{
     let UploaderStyle = {
       display: 'none'
     }
-
     /*
     * In case we want to make the functionality for upload, let's have this here:
           <strong>Upload a file: </strong> <input type="file" id="i_file" value="" onChange={(...args) => this.onChangeUpload(...args)} />
