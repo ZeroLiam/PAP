@@ -98,9 +98,10 @@ sockio.on('connection', function(socketclient){
 			}
 		});
 
-		socketclient.on("cnavas", function(data){
-			console.log("CANVAS URL");
+		socketclient.on("reloadClients", function(data){
+			console.log("Reload?");
 			console.log(data);
+			sockio.emit('shouldReload', data);
 		});
 
 });

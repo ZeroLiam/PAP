@@ -47,6 +47,10 @@ class Cam extends Component {
 			this.camtrack(this.dt);
 	}
 
+		onClickReload(e){
+				socketio.emit("reloadClients", "reload");
+		}
+
 	setNewDataObj(dt){
 	    this.dt = dt;
 	}
@@ -64,6 +68,11 @@ class Cam extends Component {
         // Get object and have it ready ONLY when an image is loaded
 				this.setNewDataObj(dt);
       });
+    });
+		socketio.on('shouldReload', (data)=>{
+      if(data == "reload"){
+        window.location.reload();
+      }
     });
     socketio.on('disconnect', () =>{
       console.log('user disconnected');
@@ -104,10 +113,8 @@ class Cam extends Component {
           event.data.forEach((rect) =>{
 						this.video = document.getElementById("video");
 						if(this.video != null){
-								// this.video.addEventListener( "loadedmetadata", (e)=> {
 							    this.vidWidth = this.video.videoWidth,
 							    this.vidHeight = this.video.videoHeight;
-								// }, false );
 						}
 
             if (rect.color === 'custom') {
@@ -132,14 +139,10 @@ class Cam extends Component {
 				}, 4500);
 
         window.setTimeout(() =>{
-					let c = 0;
-					let c2 = 0;
           for(let opx = 0; opx < myevt.length; opx++){
             if(myevt[opx] != undefined){
 							modClient[opx].posx = myevt[opx].x;
 	            modClient[opx].posy = myevt[opx].y;
-	            // modClient[opx].devw = this.vidWidth;
-	            // modClient[opx].devh = this.vidHeight;
 	            modClient[opx].devw = myevt[opx].width;
 	            modClient[opx].devh = myevt[opx].height;
 	            modClient[opx].img = this.state.imgsrc;
@@ -167,6 +170,7 @@ class Cam extends Component {
     return newrgb;
   }
 
+	//For the future: Create custom color
   createCustomColor(value, name, tracker) {
     let components = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(value);
     let customColorR = parseInt(components[1], 16);
@@ -214,10 +218,11 @@ class Cam extends Component {
         marginLeft: '0px',
         marginTop: '15px',
         position: 'absolute',
-				// backgroundColor: "rgba(0,0,0,0.1)",
-        // backgroundSize: 'cover',
-        // backgroundRepeat: 'no-repeat',
-        // backgroundImage: "url(http://mediang.gameswelt.net/public/images/201606/7962b7e8b6aaf20d6c5900418335fcbb.jpg)"
+				backgroundColor: "rgba(0,0,0,0.1)",
+				opacity: "0.5",
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundImage: "url('"+ this.state.imgsrc +"')"
       }
     }
 
@@ -233,6 +238,9 @@ class Cam extends Component {
 										<h2> Choose an image to distribute on the devices </h2>
 										<div className="choose-file">
 												<Uploader onUpdate={(...args) => this.onUpdateImg(...args)}/>
+												<div className="reload-clients">
+												<input type="button" id="reload-c" name="reload-c" value="Reload clients and try again" onClick={(...args) => this.onClickReload(...args)} /><br/><br/>
+												</div>
 												<img className="display-image" src={this.state.imgsrc} />
 										</div>
 						</div>

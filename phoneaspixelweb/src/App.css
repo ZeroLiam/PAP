@@ -120,7 +120,7 @@ h1, h2, h3, h4, h5{
   color: #555;
 }
 
-#i_submit, #i_button{
+#i_submit, #i_button, #reload-c{
   margin-top: 8px;
   background-color: rgba(0,255,255,1);
   border: 1px solid #444;

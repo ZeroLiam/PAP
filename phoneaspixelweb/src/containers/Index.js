@@ -61,6 +61,12 @@ class Index extends Component {
           console.log(this.state.data.img);
       });
 
+    socketio.on('shouldReload', (data)=>{
+      if(data == "reload"){
+        window.location.reload();
+      }
+    });
+
     socketio.on('disconnect', () =>{
       let displayStat = update(this.state.data, {
         display: {$set: 'none'}
@@ -85,37 +91,35 @@ class Index extends Component {
       height: viewPortHeight,
       bgcolor: this.state.data.color
     }
-    let newSizeWidth = ((this.state.data.devw * 100) / maindiv.width) / 100;
-    let newSizeHeight = ((this.state.data.devh * 100) / maindiv.height) / 100;
+    let newSizeWidth = Math.ceil(680 / this.state.data.devw);
+    let newSizeHeight = Math.ceil(350 / this.state.data.devh);
     //http://s1.picswalls.com/wallpapers/2014/07/19/colorful-wallpaper_110901754_65.jpg
 
     if(this.scaleChanged){
       this.theScaley = newSizeHeight;
       this.theScalex = newSizeWidth;
     }
-    let newPosx = (this.state.data.posx * 680) * this.theScalex;
-    let newPosy = (this.state.data.posy * this.theScaley * 10) + 350;
+
+    let newPosx = this.state.data.posx;
+    let newPosy = this.state.data.posy;
 
     let imgdiv = {
-      position: 'relative',
+      position: 'absolute',
       backgroundSize: "cover",
       width: maindiv.width + "px",
       height: maindiv.height + "px",
       display: this.state.data.display,
       backgroundImage:"url("+ this.state.data.img + ")",
       backgroundRepeat:'no-repeat',
-      transform: "scaleX(5) scaleY(5)",
-      transformOrigin: "(-"+ newPosx +"px -"+ newPosy+"px)"
+      backgroundPosition: "-" + newPosx + "px -" + newPosy + "px",
+      transform: "scaleX("+ this.theScalex +") scaleY("+ this.theScaley + ")"
     }
-
 
     return (
       <div>
       <div style={{backgroundColor: maindiv.bgcolor, width: maindiv.width, height: maindiv.height}}>
         <div style={imgdiv}></div>
       </div>
-
-
 
       </div>
     );
