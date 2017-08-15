@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
 import './../App.css';
-import socketio from './../lib/ws_client';
+import $ from 'jquery';
+import Uploader from './../components/Uploader';
 import tracking from 'tracking';
 import _ from 'lodash';
-
+const config = {
+	host: 'localhost',//local ip, remember to change on testing
+	port: '3001',
+	protocol: 'echo-protocol'
+}
+import SocketIOClient from 'socket.io-client';
+// Creating the socket-client instance will automatically connect to the server.
+const socketio = SocketIOClient('http://'+ config.host + ':' + config.port + '/');
 
 class Cam extends Component {
   constructor(props){
@@ -12,11 +20,40 @@ class Cam extends Component {
     let video = null;
     let camera = null;
     let contxt = null;
+		let vidHeight = 0;
+		let vidWidth = 0;
+		let dt = [];
+		let imgsource = "";
 
     this.state = {
-        data: []
+        data: [],
+				imgsrc: "",
+				sendImage: ""
     }
   }
+
+	onUpdateImg(val){
+		//When it's by upload
+		// let source = val.replace("blob:", "");
+
+		//When it's by URL
+			let source = val;
+	    this.setState(prevState =>{
+	      prevState.imgsrc = source;
+	      return prevState;
+	    });
+			this.setNewImgSource(source);
+			//Only trigger the this.camtrack(dt) function IF there is an img loaded
+			this.camtrack(this.dt);
+	}
+
+	setNewDataObj(dt){
+	    this.dt = dt;
+	}
+
+	setNewImgSource(imgs){
+		this.imgsource = imgs;
+	}
 
   componentDidMount(){
     socketio.on('connect', () => {
@@ -24,61 +61,97 @@ class Cam extends Component {
       //Change the id of client and send it to the server
       // clientdt.id = socketio.id;
       socketio.on('getcolors', (dt) =>{
-        this.setState({data: dt});
+        // Get object and have it ready ONLY when an image is loaded
+				this.setNewDataObj(dt);
       });
     });
     socketio.on('disconnect', () =>{
       console.log('user disconnected');
     });
-      //setup the tracking for the colors
-      this.camtrack();
   }
 
-  camtrack(){
-      // this.contxt = this.canvas.getContext('2d');
-      let tracker = new tracking.ColorTracker();
-      console.log("this.state");
-      console.log(this.state);
+  camtrack(client){
+      console.log("client");
+      console.log(client);
       let allColors = [];
       let newColorNames = [];
-      //Change colors each time we get a new set of colors
-      _.forEach(this.state.data, (value, key)=>{
-        console.log(value.id + " " + value.color);
-        let newColor = this.convertToRGB(value.color);
-        newColorNames.push(value.id);
-        console.log(value.id);
 
-        tracking.ColorTracker.registerColor(value.id, function(r, g, b) {
-          if (r < newColor[0] && g > newColor[1] && b < newColor[2]) {
-            return true;
-          }
-          return false;
-        });
-      });
 
-        let colors = new tracking.ColorTracker(newColorNames);
-        tracking.track('#video', tracker, { camera: true });
+        let colors = new tracking.ColorTracker(['magenta', 'cyan']);
+        let modClient = client;
+        let myevt = [];
+        console.log(modClient);
+        let dummy = {
+          cyanx: 0,
+          cyany: 0,
+          cyanw: 0,
+          cyanh: 0,
+          magx: 0,
+          magy:0,
+          magw: 0,
+          magh: 0
+        };
 
-        tracker.on('track', (event)=> {
+        colors.on('track', (event)=> {
           this.contxt = this.refs.camera.getContext('2d');
           this.canvas = this.refs.camera;
           this.contxt.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+          console.log("event.data");
+          console.log(event.data);
+          myevt = event.data;
+
           event.data.forEach((rect) =>{
+						this.video = document.getElementById("video");
+						if(this.video != null){
+								// this.video.addEventListener( "loadedmetadata", (e)=> {
+							    this.vidWidth = this.video.videoWidth,
+							    this.vidHeight = this.video.videoHeight;
+								// }, false );
+						}
+
             if (rect.color === 'custom') {
-              rect.color = tracker.customColor;
+              rect.color = colors.customColor;
             }
 
             this.contxt.strokeStyle = rect.color;
             this.contxt.strokeRect(rect.x, rect.y, rect.width, rect.height);
             this.contxt.font = '11px Helvetica';
-            this.contxt.fillStyle = "#fff";
+            this.contxt.fillStyle = "#f00";
             this.contxt.fillText('x: ' + rect.x + 'px', rect.x + rect.width + 5, rect.y + 11);
             this.contxt.fillText('y: ' + rect.y + 'px', rect.x + rect.width + 5, rect.y + 22);
+            console.log('x: ' + rect.x + 'px', rect.x + rect.width + 5, rect.y + 11);
           });
         });
 
-      //  initGUIControllers(tracker);
+
+
+        let trackerTask = tracking.track('#video', colors, { camera: true });
+				window.setTimeout(() =>{
+					trackerTask.stop();
+				}, 4500);
+
+        window.setTimeout(() =>{
+					let c = 0;
+					let c2 = 0;
+          for(let opx = 0; opx < myevt.length; opx++){
+            if(myevt[opx] != undefined){
+							modClient[opx].posx = myevt[opx].x;
+	            modClient[opx].posy = myevt[opx].y;
+	            // modClient[opx].devw = this.vidWidth;
+	            // modClient[opx].devh = this.vidHeight;
+	            modClient[opx].devw = myevt[opx].width;
+	            modClient[opx].devh = myevt[opx].height;
+	            modClient[opx].img = this.state.imgsrc;
+							modClient[opx].display = 'block';
+
+							console.log("video w: ", this.vidWidth);
+	            console.log("modClient[opx].posx");
+	            console.log(modClient[opx].posx);
+						}
+          }
+          socketio.emit("dummy", modClient);
+        }, 5000);
   }
 
   convertToRGB(color){
@@ -92,26 +165,83 @@ class Cam extends Component {
     let newrgb = [newr, newg, newb];
 
     return newrgb;
-
   }
 
+  createCustomColor(value, name, tracker) {
+    let components = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(value);
+    let customColorR = parseInt(components[1], 16);
+    let customColorG = parseInt(components[2], 16);
+    let customColorB = parseInt(components[3], 16);
+
+    let colorTotal = customColorR + customColorG + customColorB;
+
+    if (colorTotal === 0) {
+      tracking.ColorTracker.registerColor(name, (r, g, b) => {
+        return r + g + b < 10;
+      });
+    } else {
+      let rRatio = customColorR / colorTotal;
+      let gRatio = customColorG / colorTotal;
+
+      tracking.ColorTracker.registerColor(name, (r, g, b) => {
+        let colorTotal2 = r + g + b;
+
+        if (colorTotal2 === 0) {
+          if (colorTotal < 10) {
+            return true;
+          }
+          return false;
+        }
+
+        let rRatio2 = r / colorTotal2,
+          gRatio2 = g / colorTotal2,
+          deltaColorTotal = colorTotal / colorTotal2,
+          deltaR = rRatio / rRatio2,
+          deltaG = gRatio / gRatio2;
+
+        return deltaColorTotal > 0.9 && deltaColorTotal < 1.1 &&
+          deltaR > 0.9 && deltaR < 1.1 &&
+          deltaG > 0.9 && deltaG < 1.1;
+      });
+    }
+
+    this.updateColors(tracker);
+  }
 
   render() {
     let camstyle = {
       videocam: {
-        marginLeft: '100px',
-        marginTop: '35px',
-        position: 'absolute'
+        marginLeft: '0px',
+        marginTop: '15px',
+        position: 'absolute',
+				// backgroundColor: "rgba(0,0,0,0.1)",
+        // backgroundSize: 'cover',
+        // backgroundRepeat: 'no-repeat',
+        // backgroundImage: "url(http://mediang.gameswelt.net/public/images/201606/7962b7e8b6aaf20d6c5900418335fcbb.jpg)"
       }
     }
 
     return (
       <div>
-        <h1>Camera driver</h1>
-        <div>
-            <video id="video" style={camstyle.videocam} ref={(vid) => { this.video = vid; }} width="600" height="450" preload autoPlay loop muted controls></video>
-            <canvas id="canvas" style={camstyle.videocam}  ref="camera" width="600" height="450"></canvas>
-        </div>
+				<div className="App-header">
+					<h3> Hello there! This is the camera driver/manager for the Phone As Pixel Web App. Enjoy! </h3>
+				</div>
+
+				<div  className="camera-wrapper">
+						<h1>Camera driver</h1>
+						<div className="upload-zone">
+										<h2> Choose an image to distribute on the devices </h2>
+										<div className="choose-file">
+												<Uploader onUpdate={(...args) => this.onUpdateImg(...args)}/>
+												<img className="display-image" src={this.state.imgsrc} />
+										</div>
+						</div>
+
+						<div className="camdrivers">
+								<video id="video" style={camstyle.videocam} ref="video" width="680" height="350" preload autoPlay loop muted controls></video>
+								<canvas id="canvas" style={camstyle.videocam}  ref="camera" width="680" height="350"></canvas>
+						</div>
+				</div>
       </div>
     );
   }
