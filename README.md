@@ -5,6 +5,9 @@ Started in the `Summer Semester 2017` at `Bauhaus University` for the `Mobile In
 For more on this, please visit the [Wiki page for the project](https://github.com/ZeroLiam/PAP/wiki)
 
 # Updates
+# Aug 23: I'M NOT GIVING UP EASILY
+## Rebuild in SCSS
+I'm going to rebuild this repository later tonight by modifying slightly my zoom & matching algorithm with the SCSS techniques provided by [Smashing Magazine](https://www.smashingmagazine.com/2012/04/css-sprites-revisited/#less-and-sass-to-the-rescue) - STAY TUNED!
 ## Future Plans
 Like I said, I want to keep maintaining this wiki regardless that my homework deadline is up. I'm learning everyday so there are a couple of ideas I want to implement:
 * The new Android Oreo has a **multi-display support**, and **I NEED TO TRY THIS APP THERE!!**
