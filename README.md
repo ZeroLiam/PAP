@@ -5,6 +5,8 @@ Started in the `Summer Semester 2017` at `Bauhaus University` for the `Mobile In
 For more on this, please visit the [Wiki page for the project](https://github.com/ZeroLiam/PAP/wiki)
 
 # Updates
+# SEPT 09: The full project is in `phoneaspixelweb` all in lowercase
+
 # Aug 23: I'M NOT GIVING UP EASILY
 ## Rebuild in SCSS & use Calc
 I'm going to rebuild this repository later tonight by modifying slightly my zoom & matching algorithm with the [SCSS techniques](https://www.smashingmagazine.com/2012/04/css-sprites-revisited/#less-and-sass-to-the-rescue) and the use of [calc()](https://www.smashingmagazine.com/2015/12/getting-started-css-calc-techniques/) provided by Smashing Magazine - STAY TUNED!
