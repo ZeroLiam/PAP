@@ -1,8 +1,9 @@
 # PAP - Phone As Pixel
 By Liselot Ramirez. My own implementation for the Phone-as-Pixel project.
 Started in the `Summer Semester 2017` at `Bauhaus University` for the `Mobile Information Systems` class.
+I'm a front-end geek and developer since forever so all of this rant is the product of my anxiety and my over-excitedness to work in a cool project like this one. My class partner Saquib was very helpful in the initial research for this project. Thank you Saquib!
 
-For more on this, please visit the [Wiki page for the project](https://github.com/ZeroLiam/PAP/wiki)
+For more on this, please visit the [Wiki page for the project](https://github.com/ZeroLiam/PAP/wiki).
 
 # Updates
 # SEPT 04: The full project is in `phoneaspixelweb` all in lowercase
