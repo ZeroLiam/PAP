@@ -6,6 +6,7 @@ For more on this, please visit the [Wiki page for the project](https://github.co
 
 # Updates
 # SEPT 04: The full project is in `phoneaspixelweb` all in lowercase
+I forgot to say it in the original Wiki message, sorry!
 
 # Aug 23: I'M NOT GIVING UP EASILY
 ## Rebuild in SCSS & use Calc
